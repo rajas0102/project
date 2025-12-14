@@ -1,7 +1,7 @@
 <div class="main-sidebar sidebar-style-2">
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-      <a href="{{ route('dashboard') }}">Coffee Shop</a>
+      <a href="{{ route('dashboard') }}">COFFEE SHOP</a>
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="{{ route('dashboard') }}">CS</a>
@@ -31,26 +31,19 @@
         </a>
       </li>
 
+      <li class="{{ Request::is('users*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('users.index') }}">
+          <i class="fas fa-users"></i> <span>Users</span>
+        </a>
+      </li>
+      @endif
+
+      <li class="menu-header">Orders</li>
       <li class="{{ Request::is('orders*') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('orders.index') }}">
           <i class="fas fa-receipt"></i> <span>Semua Order</span>
         </a>
       </li>
-
-     
-      @endif
-
-      @if(Auth::user()->role == 'kasir')
-      <!-- Menu khusus Kasir -->
-      <li class="menu-header">Kasir</li>
-      
-      <li class="{{ Request::is('orders*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('orders.index') }}">
-          <i class="fas fa-receipt"></i> <span>Order Masuk</span>
-        </a>
-      </li>
-      @endif
-
     </ul>
   </aside>
 </div>

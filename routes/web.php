@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:owner'])->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('menus', MenuController::class);
+        Route::resource('users', UserController::class);
     });
     
     // Owner & Kasir Routes

@@ -32,13 +32,9 @@
 
       <!-- Main Content -->
       <div class="main-content">
+        @include('components.alert')
         @yield('content')
       </div>
-
-      <div class="main-content">
-  @include('components.alert')
-  @yield('content')
-</div>
 
       <!-- Footer -->
       @include('profile.partials.footer')
