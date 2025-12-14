@@ -18,9 +18,34 @@
           <div class="card-header">
             <h4>Form Tambah User</h4>
           </div>
-          <form action="{{ route('users.store') }}" method="POST">
+          <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
+              <!-- Profile Photo -->
+              <div class="form-group text-center mb-4">
+                <div class="mb-3">
+                  <img src="{{ asset('backend/dist/assets/img/avatar/avatar-1.png') }}" 
+                       alt="Profile Photo" 
+                       class="rounded-circle" 
+                       width="150" 
+                       height="150"
+                       style="object-fit: cover; border: 3px solid #6777ef;"
+                       id="profile-photo-preview">
+                </div>
+                <div class="custom-file" style="max-width: 300px; margin: 0 auto;">
+                  <input type="file" 
+                         name="profile_photo" 
+                         class="custom-file-input @error('profile_photo') is-invalid @enderror" 
+                         id="profile-photo-input"
+                         accept="image/*">
+                  <label class="custom-file-label" for="profile-photo-input">Pilih Foto Profile</label>
+                  @error('profile_photo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+                <small class="form-text text-muted">Format: JPG, PNG, GIF. Maksimal 2MB</small>
+              </div>
+
               <div class="form-group">
                 <label>Nama Lengkap</label>
                 <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
@@ -75,3 +100,24 @@
   </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+// Preview profile photo before upload
+document.getElementById('profile-photo-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('profile-photo-preview').src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+    
+    // Update label text
+    const fileName = file.name;
+    const label = document.querySelector('.custom-file-label');
+    label.textContent = fileName;
+  }
+});
+</script>
+@endpush

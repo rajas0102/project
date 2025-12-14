@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>@yield('title') &mdash; Coffee Shop</title>
+  <link rel="icon" type="image/png" href="{{ asset('backend/dist/assets/img/stisla-fill.png') }}">
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="{{ asset('backend/dist/assets/modules/bootstrap/css/bootstrap.min.css') }}">
@@ -25,10 +26,10 @@
     <div class="main-wrapper main-wrapper-1">
       
       <!-- Navbar -->
-      @include('profile.partials.navbar')
+      @include('partials.navbar')
 
       <!-- Sidebar -->
-      @include('profile.partials.sidebar')
+      @include('partials.sidebar')
 
       <!-- Main Content -->
       <div class="main-content">
@@ -37,7 +38,7 @@
       </div>
 
       <!-- Footer -->
-      @include('profile.partials.footer')
+      @include('partials.footer')
     </div>
   </div>
 

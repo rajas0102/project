@@ -24,7 +24,7 @@
             <h4>Total Order</h4>
           </div>
           <div class="card-body">
-            {{ $totalOrders ?? 0 }}
+            {{ $totalOrders }}
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
             <h4>Total Revenue</h4>
           </div>
           <div class="card-body">
-            Rp {{ number_format($totalRevenue ?? 0, 0, ',', '.') }}
+            Rp {{ number_format($totalRevenue, 0, ',', '.') }}
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@
             <h4>Total Menu</h4>
           </div>
           <div class="card-body">
-            {{ $totalMenus ?? 0 }}
+            {{ $totalMenus }}
           </div>
         </div>
       </div>
@@ -75,7 +75,69 @@
             <h4>Order Hari Ini</h4>
           </div>
           <div class="card-body">
-            {{ $todayOrders ?? 0 }}
+            {{ $todayOrders }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafik Pendapatan & Best Seller -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4>Grafik Pendapatan</h4>
+        </div>
+        <div class="card-body">
+          <canvas id="revenueChart" height="158"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card gradient-bottom">
+        <div class="card-header">
+          <h4>Best Seller Produk</h4>
+          <div class="card-header-action dropdown">
+            <a href="#" data-toggle="dropdown" class="btn btn-danger dropdown-toggle">Bulan Ini</a>
+            <ul class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+              <li class="dropdown-title">Pilih Period</li>
+              <li><a href="#" class="dropdown-item">Hari Ini</a></li>
+              <li><a href="#" class="dropdown-item">Minggu Ini</a></li>
+              <li><a href="#" class="dropdown-item active">Bulan Ini</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-body" id="top-5-scroll" style="max-height: 400px; overflow-y: auto;">
+          <ul class="list-unstyled list-unstyled-border">
+            @forelse($bestSellerProducts as $product)
+            <li class="media">
+              <img class="mr-3 rounded" width="55" 
+                   src="{{ $product->image ? asset('storage/' . $product->image) : asset('backend/dist/assets/img/products/product-1-50.png') }}" 
+                   alt="{{ $product->name }}">
+              <div class="media-body">
+                <div class="float-right">
+                  <div class="font-weight-600 text-muted text-small">{{ $product->total_sold }} Terjual</div>
+                </div>
+                <div class="media-title">{{ $product->name }}</div>
+                <div class="mt-1">
+                  <div class="budget-price">
+                    <div class="budget-price-square bg-primary" data-width="{{ $totalRevenue > 0 ? min(($product->total_revenue / $totalRevenue) * 100, 100) : 0 }}"></div>
+                    <div class="budget-price-label">Rp {{ number_format($product->total_revenue, 0, ',', '.') }}</div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            @empty
+            <li class="text-center text-muted py-3">Belum ada data penjualan bulan ini</li>
+            @endforelse
+          </ul>
+        </div>
+        <div class="card-footer pt-3 d-flex justify-content-center">
+          <div class="budget-price justify-content-center">
+            <div class="budget-price-square bg-primary" data-width="20"></div>
+            <div class="budget-price-label">Total Pendapatan</div>
           </div>
         </div>
       </div>
@@ -101,7 +163,7 @@
                 </tr>
               </thead>
               <tbody>
-                @forelse($recentOrders ?? [] as $order)
+                @forelse($recentOrders as $order)
                 <tr>
                   <td>{{ $order->order_number }}</td>
                   <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>
@@ -133,7 +195,61 @@
 
 @push('scripts')
 <script>
-  // Custom JS kalau butuh
-  console.log('Dashboard Owner loaded');
+// Data dari Controller
+var revenueData = @json($revenueChartData);
+
+// Grafik Pendapatan
+var ctx = document.getElementById("revenueChart").getContext('2d');
+var revenueChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: revenueData.labels,
+    datasets: [{
+      label: 'Pendapatan',
+      data: revenueData.data,
+      borderWidth: 2,
+      backgroundColor: 'rgba(63,82,227,.8)',
+      borderColor: 'transparent',
+      pointBorderColor: '#fff',
+      pointBackgroundColor: 'rgba(63,82,227,.8)',
+      pointRadius: 4
+    }]
+  },
+  options: {
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          callback: function(value) {
+            return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          }
+        }
+      }],
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    },
+    tooltips: {
+      callbacks: {
+        label: function(tooltipItem) {
+          return 'Rp ' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+      }
+    }
+  }
+});
+
+// Initialize budget price bars
+$(document).ready(function() {
+  $('.budget-price-square').each(function() {
+    var width = $(this).data('width') + '%';
+    $(this).css('width', width);
+  });
+});
 </script>
 @endpush

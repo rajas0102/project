@@ -1,8 +1,11 @@
 <div class="main-sidebar sidebar-style-2">
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-      <a href="{{ route('dashboard') }}">COFFEE SHOP</a>
-    </div>
+  <img src="{{ asset('backend/dist/assets/img/stisla-fill.png') }}" 
+       alt="logo" 
+       style="width: 30px; height: 30px; margin-right: 8px; vertical-align: middle; object-fit: contain;">
+  <a href="{{ route('dashboard') }}">COFFEE SHOP</a>
+</div>
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="{{ route('dashboard') }}">CS</a>
     </div>
